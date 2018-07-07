@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
-// 'D0PE' token contract
+// 'D0PE' token contract - MAKE CHANGES HERE!
 //
 // Deployed to : YOUR WALLET PUBLIC ADDRESS
 // Symbol      : 0DOPE
@@ -99,6 +99,7 @@ contract Owned {
 // ERC20 Token, with the addition of symbol, name and decimals and assisted
 // token transfers
 // ----------------------------------------------------------------------------
+// - MAKE CHANGES HERE!
 contract DopeToken is ERC20Interface, Owned, SafeMath {
     string public symbol;
     string public  name;
@@ -112,6 +113,7 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
+    // - MAKE CHANGES HERE!
     function DopeToken() public {
         symbol = "0DOPE";
         name = "Black Girls Code DopeToken";
