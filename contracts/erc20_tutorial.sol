@@ -1,17 +1,17 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.5.0;
 
 // ----------------------------------------------------------------------------
-// 'D0PE' token contract - MAKE CHANGES HERE!
+// 'ROBBYTOKEN' token contract - MAKE CHANGES HERE!
 //
 // Deployed to : YOUR WALLET PUBLIC ADDRESS
-// Symbol      : 0DOPE
-// Name        : Black Girls Code DopeToken
-// Total supply: 100000000
+// Symbol      : RTG4
+// Name        : Robby Token
+// Total supply: 1000000000000000 = 1,000,000,000 Tokens
 // Decimals    : 18
 //
 // Enjoy.
 //
-// (c) by Moritz Neto with BokkyPooBah / Bok Consulting Pty Ltd Au 2017. The MIT Licence.
+// (c) by Robert Thomas Greenfield 2019 - The MIT Licence.
 // ----------------------------------------------------------------------------
 
 
@@ -43,9 +43,9 @@ contract SafeMath {
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
 // ----------------------------------------------------------------------------
 contract ERC20Interface {
-    function totalSupply() public constant returns (uint);
-    function balanceOf(address tokenOwner) public constant returns (uint balance);
-    function allowance(address tokenOwner, address spender) public constant returns (uint remaining);
+    function totalSupply() public view returns (uint);
+    function balanceOf(address tokenOwner) public view returns (uint balance);
+    function allowance(address tokenOwner, address spender) public view returns (uint remaining);
     function transfer(address to, uint tokens) public returns (bool success);
     function approve(address spender, uint tokens) public returns (bool success);
     function transferFrom(address from, address to, uint tokens) public returns (bool success);
@@ -61,7 +61,7 @@ contract ERC20Interface {
 // Borrowed from MiniMeToken
 // ----------------------------------------------------------------------------
 contract ApproveAndCallFallBack {
-    function receiveApproval(address from, uint256 tokens, address token, bytes data) public;
+    function receiveApproval(address from, uint256 tokens, address token, bytes memory data) public;
 }
 
 
@@ -74,7 +74,7 @@ contract Owned {
 
     event OwnershipTransferred(address indexed _from, address indexed _to);
 
-    function Owned() public {
+    constructor() public {
         owner = msg.sender;
     }
 
@@ -88,7 +88,7 @@ contract Owned {
     }
     function acceptOwnership() public {
         require(msg.sender == newOwner);
-        OwnershipTransferred(owner, newOwner);
+        emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
         newOwner = address(0);
     }
@@ -100,7 +100,7 @@ contract Owned {
 // token transfers
 // ----------------------------------------------------------------------------
 // - MAKE CHANGES HERE!
-contract DopeToken is ERC20Interface, Owned, SafeMath {
+contract RobbyToken is ERC20Interface, Owned, SafeMath {
     string public symbol;
     string public  name;
     uint8 public decimals;
@@ -114,20 +114,20 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
     // Constructor
     // ------------------------------------------------------------------------
     // - MAKE CHANGES HERE!
-    function DopeToken() public {
-        symbol = "0DOPE";
-        name = "Black Girls Code DopeToken";
+    constructor() public {
+        symbol = "RTG4";
+        name = "Robert Thomas Greenfield IV Token";
         decimals = 18;
-        _totalSupply = 100000000000000000000; //100 tokens
-        balances[YOUR WALLET PUBLIC ADDRESS] = _totalSupply;
-        Transfer(address(0), YOUR WALLET PUBLIC ADDRESS, _totalSupply);
+        _totalSupply = 1000000000000000000000000000; //1B tokens
+        balances[0x4ABd8b42C8fDa42a074025e133089a949385eecE] = _totalSupply;
+        emit Transfer(address(0), 0x4ABd8b42C8fDa42a074025e133089a949385eecE, _totalSupply);
     }
 
 
     // ------------------------------------------------------------------------
     // Total supply
     // ------------------------------------------------------------------------
-    function totalSupply() public constant returns (uint) {
+    function totalSupply() public view returns (uint) {
         return _totalSupply  - balances[address(0)];
     }
 
@@ -135,7 +135,7 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     // Get the token balance for account tokenOwner
     // ------------------------------------------------------------------------
-    function balanceOf(address tokenOwner) public constant returns (uint balance) {
+    function balanceOf(address tokenOwner) public view returns (uint balance) {
         return balances[tokenOwner];
     }
 
@@ -148,7 +148,7 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
     function transfer(address to, uint tokens) public returns (bool success) {
         balances[msg.sender] = safeSub(balances[msg.sender], tokens);
         balances[to] = safeAdd(balances[to], tokens);
-        Transfer(msg.sender, to, tokens);
+        emit Transfer(msg.sender, to, tokens);
         return true;
     }
 
@@ -163,7 +163,7 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     function approve(address spender, uint tokens) public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
-        Approval(msg.sender, spender, tokens);
+        emit Approval(msg.sender, spender, tokens);
         return true;
     }
 
@@ -181,7 +181,7 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
         balances[from] = safeSub(balances[from], tokens);
         allowed[from][msg.sender] = safeSub(allowed[from][msg.sender], tokens);
         balances[to] = safeAdd(balances[to], tokens);
-        Transfer(from, to, tokens);
+        emit Transfer(from, to, tokens);
         return true;
     }
 
@@ -190,7 +190,7 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
     // Returns the amount of tokens approved by the owner that can be
     // transferred to the spender's account
     // ------------------------------------------------------------------------
-    function allowance(address tokenOwner, address spender) public constant returns (uint remaining) {
+    function allowance(address tokenOwner, address spender) public view returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
 
@@ -200,10 +200,10 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
     // from the token owner's account. The spender contract function
     // receiveApproval(...) is then executed
     // ------------------------------------------------------------------------
-    function approveAndCall(address spender, uint tokens, bytes data) public returns (bool success) {
+    function approveAndCall(address spender, uint tokens, bytes memory data) public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
-        Approval(msg.sender, spender, tokens);
-        ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, this, data);
+        emit Approval(msg.sender, spender, tokens);
+        ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, address(this), data);
         return true;
     }
 
@@ -211,7 +211,7 @@ contract DopeToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     // Don't accept ETH
     // ------------------------------------------------------------------------
-    function () public payable {
+    function () external payable {
         revert();
     }
 
